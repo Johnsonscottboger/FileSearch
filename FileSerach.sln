@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2005
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSerach", "FileSerach\FileSerach.csproj", "{58181E52-B8E6-484D-8C80-4C378364DCE0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{58181E52-B8E6-484D-8C80-4C378364DCE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58181E52-B8E6-484D-8C80-4C378364DCE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58181E52-B8E6-484D-8C80-4C378364DCE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58181E52-B8E6-484D-8C80-4C378364DCE0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CFE7A6CB-843D-4301-8402-70BFE13AEA0A}
+	EndGlobalSection
+EndGlobal
