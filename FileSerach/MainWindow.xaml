@@ -54,8 +54,7 @@
                                     <KeyBinding Command="{Binding FindCommand}" Key="Return"/>
                                 </TextBox.InputBindings>
                             </TextBox>-->
-                            <toolkit:AutoCompleteBox x:Name="searchTextBox" ValueMemberPath="KeyWord" Grid.Column="1" Margin="8 0 0 0" materialDesign:HintAssist.Hint="查找文件，软件" 
-                                                     materialDesign:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0"
+                            <toolkit:AutoCompleteBox x:Name="searchTextBox" ValueMemberPath="KeyWord" Grid.Column="1" Margin="8 0 0 0" BorderThickness="0"
                                                      MinWidth="200" VerticalAlignment="Stretch"
                                                      Text="{Binding KeyWord, Mode=TwoWay, UpdateSourceTrigger =PropertyChanged}"
                                                      ItemsSource="{Binding SearchHistorys}"
@@ -65,11 +64,19 @@
                                         <Label Content="{Binding KeyWord}"/>
                                     </DataTemplate>
                                 </toolkit:AutoCompleteBox.ItemTemplate>
+                                <!--<i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="TextChanged">
+                                        <i:InvokeCommandAction Command="{Binding FindCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>-->
+                                <toolkit:AutoCompleteBox.InputBindings>
+                                    <KeyBinding Command="{Binding FindCommand}" Key="Return"/>
+                                </toolkit:AutoCompleteBox.InputBindings>
                             </toolkit:AutoCompleteBox>
                         </Grid>
                     </materialDesign:ColorZone>
                     <Button Style="{DynamicResource MaterialDesignToolForegroundButton}" Margin="10 0 0 0" Panel.ZIndex="0"
-                            Command="{Binding FindCommand}">
+                            Command="{Binding FindCommand}" IsDefault="True">
                         <materialDesign:PackIcon Kind="Send" />
                     </Button>
                 </StackPanel>
