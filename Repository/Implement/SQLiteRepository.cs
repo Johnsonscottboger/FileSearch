@@ -18,10 +18,7 @@ namespace Repository.Implement
     public class SQLiteRepository : IRepository
     {
         private static readonly SemaphoreSlim _asyncLock = new SemaphoreSlim(1);
-
-        private int _month;
-        private int _year;
-
+       
         private string _connString = ConfigurationManager.AppSettings["ConnectionString"];
 
         private IDbConnection _conn;

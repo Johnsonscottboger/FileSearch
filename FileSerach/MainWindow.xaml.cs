@@ -26,6 +26,7 @@ namespace FileSerach
         {
             InitializeComponent();
 
+            this.DataContext = new MainWindowViewModel();
             //this.searchTextBox.Populating += new PopulatingEventHandler(AutoCompleteBox_Populating);
             this.searchTextBox.SelectionChanged += new SelectionChangedEventHandler(SearchTextBox_SelectionChanged);
         }

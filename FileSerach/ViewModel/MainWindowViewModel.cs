@@ -7,8 +7,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using FileSerach.Command;
+using FileSerach.Core;
 using FileSerach.Model;
 using QueryEngine;
 using Repository.Implement;
@@ -130,14 +134,17 @@ namespace FileSerach.ViewModel
         {
             return Task.Factory.StartNew(() =>
             {
-                var results = Engine.GetAllFilesAndDirectories();
-                this.AllFiles = results?.Select(p =>
+                var results = Engine.GetAllFilesAndDirectories()?.Select(p =>
                 new FileResult()
                 {
-                    Icon = null,
                     FileName = p.FileName,
                     FullName = p.FullFileName,
+                    IsFolder = p.IsFolder,
+                    IsHidden = p.IsHidden,
+                    IsNormal = p.IsNormal,
+                    IsSys = p.IsSys
                 });
+                this.AllFiles = results;
             });
         }
         #endregion
@@ -151,7 +158,10 @@ namespace FileSerach.ViewModel
                     this.FindFiles = new List<FileResult>();
                 var serach = new SearchHistory() { KeyWord = this.KeyWord, DateTime = DateTime.Now };
                 this._repository.AddOrUpdateAsync(serach);
-                this.FindFiles = this.AllFiles.Where(p => p.FileName.Contains(this.KeyWord));
+
+                var serachResult = SearchHelper.Search(this.KeyWord, this.AllFiles.AsParallel().Select(p => p.FileName));
+
+                this.FindFiles = this.AllFiles.AsParallel().Join(serachResult.AsParallel(), outer => outer.FileName, inner => inner, (outer, inner) => outer);
             };
 
             if (this._loadAllTask.IsCompleted)

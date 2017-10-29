@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using UsnOperation;
+using System.Threading.Tasks;
 
 namespace QueryEngine
 {
@@ -64,13 +65,11 @@ namespace QueryEngine
 
             IEnumerable<DriveInfo> fixedNtfsDrives = GetAllFixedNtfsDrives();
 
-            foreach (var drive in fixedNtfsDrives)
+            Parallel.ForEach(fixedNtfsDrives, drive =>
             {
                 var usnOperator = new UsnOperator(drive);
 
-                var usnEntries = usnOperator.GetEntries().Where(e => !excludeFolders.Contains(e.FileName.ToUpper())
-                                                                   || e.IsHidden == showHidden
-                                                                   || e.IsSys == showSys);
+                var usnEntries = usnOperator.GetEntries().Where(e => !excludeFolders.Contains(e.FileName.ToUpper()));
 
                 var folders = usnEntries.Where(e => e.IsFolder).ToArray();
                 List<FrnFilePath> paths = GetFolderPath(folders, drive);
@@ -80,7 +79,7 @@ namespace QueryEngine
                     usn => usn.ParentFileReferenceNumber,
                     path => path.FileReferenceNumber,
                     (usn, path) => new FileAndDirectoryEntry(usn, path.Path)));
-            }
+            });
             return result;
         }
 

@@ -16,6 +16,12 @@ namespace QueryEngine
 
         protected bool isFolder;
 
+        protected bool isHidden;
+
+        protected bool isSys;
+
+        protected bool isNormal;
+
         protected string path;
 
         public UInt64 FileReferenceNumber
@@ -66,12 +72,31 @@ namespace QueryEngine
             }
         }
 
+        public bool IsHidden
+        {
+            get { return this.isHidden; }
+        }
+
+        public bool IsSys
+        {
+            get { return this.isSys; }
+        }
+
+        public bool IsNormal
+        {
+            get { return this.isNormal; }
+        }
+
+
         public FileAndDirectoryEntry(UsnEntry usnEntry, string path)
         {
             this.fileReferenceNumber = usnEntry.FileReferenceNumber;
             this.parentFileReferenceNumber = usnEntry.ParentFileReferenceNumber;
             this.fileName = usnEntry.FileName;
             this.isFolder = usnEntry.IsFolder;
+            this.isHidden = usnEntry.IsHidden;
+            this.isNormal = usnEntry.IsNormal;
+            this.isSys = usnEntry.IsSys;
             this.path = path;
         }
     }

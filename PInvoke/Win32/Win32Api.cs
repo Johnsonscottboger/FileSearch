@@ -239,7 +239,7 @@
                     throw new Win32Exception(Marshal.GetLastWin32Error());
                 }
             }
-            catch (Exception exception)
+            catch
             {
                 //string msg = string.Format("Exception caught in WriteAlternateStream()\n  '{0}'\n  for file '{1}'.",
                 //    exception.Message, AltStreamDesc);
@@ -324,7 +324,7 @@
                     }
                 }
             }
-            catch (Exception exception)
+            catch
             {
                 //string msg = string.Format("Exception caught in ReadAlternateStream(), '{0}'\n  for file '{1}'.",
                 //    exception.Message, currentfile);

@@ -16,11 +16,15 @@
         xmlns:local="clr-namespace:FileSerach"
         xmlns:model="clr-namespace:FileSerach.Model"
         xmlns:vm="clr-namespace:FileSerach.ViewModel"
+        xmlns:convert="clr-namespace:FileSerach.Convert"
         mc:Ignorable="d"
         Title="文件搜索" Height="350" Width="525">
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <vm:MainWindowViewModel/>
-    </Window.DataContext>
+    </Window.DataContext>-->
+    <Window.Resources>
+        <convert:FileToIconConverter x:Key="fileToIcon"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -69,23 +73,35 @@
                         <materialDesign:PackIcon Kind="Send" />
                     </Button>
                 </StackPanel>
-                <materialDesign:PopupBox DockPanel.Dock="Right"  PlacementMode="BottomAndAlignRightEdges" StaysOpen="False" HorizontalAlignment="Right">
+                <!--<materialDesign:PopupBox DockPanel.Dock="Right"  PlacementMode="BottomAndAlignRightEdges" StaysOpen="False" HorizontalAlignment="Right">
                     <StackPanel Margin="10">
                         <CheckBox Content="隐藏文件" IsChecked="{Binding ShowHiddenFile}" Padding="10 5"/>
                         <CheckBox Content="系统文件" IsChecked="{Binding ShowSysFile}" Padding="10 5 10 0"/>
                     </StackPanel>
-                </materialDesign:PopupBox>
+                </materialDesign:PopupBox>-->
             </DockPanel>
         </materialDesign:ColorZone>
 
         <DataGrid Grid.Row="1" ItemsSource="{Binding FindFiles}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedItem}"
                   CanUserSortColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Icon}" Header=""/>
-                <DataGridTextColumn Binding="{Binding FileName}" Header="文件名"/>
-                <DataGridHyperlinkColumn Binding="{Binding FullName}" Header="文件路径"/>
-                <DataGridTextColumn Binding="{Binding CreateDateTime}" Header="修改时间"/>
-                <DataGridTextColumn Binding="{Binding Size}" Header="文件大小"/>
+                <DataGridTemplateColumn Header="">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Stretch="UniformToFill">
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource fileToIcon}">
+                                        <Binding Path="FullName"/>
+                                    </MultiBinding >
+                                </Image.Source>
+                            </Image>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Binding="{Binding FileName}" Header="文件名">
+                </DataGridTextColumn>
+                <DataGridHyperlinkColumn Binding="{Binding FullName}" Header="文件路径">
+                </DataGridHyperlinkColumn>
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu>
