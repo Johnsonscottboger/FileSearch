@@ -50,6 +50,10 @@
     <Compile Include="Engine.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PInvoke\PInvoke.csproj">
+      <Project>{8E01B2CA-1B49-48D7-803B-71F1223EEF72}</Project>
+      <Name>PInvoke</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UsnOperation\UsnOperation.csproj">
       <Project>{1D73E92A-245E-4253-885D-EAF084994CBE}</Project>
       <Name>UsnOperation</Name>

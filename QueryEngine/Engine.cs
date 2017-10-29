@@ -14,7 +14,7 @@ namespace QueryEngine
         /// </summary>
         protected const UInt64 ROOT_FILE_REFERENCE_NUMBER = 0x5000000000005L;
 
-        protected static readonly string excludeFolders = string.Join("|", 
+        protected static readonly string excludeFolders = string.Join("|",
             new string[]
             {
                 "$RECYCLE.BIN",
@@ -33,11 +33,6 @@ namespace QueryEngine
                 "$Extend"
             }).ToUpper();
 
-        public static IEnumerable<DriveInfo> GetAllFixedNtfsDrives()
-        {
-            return DriveInfo.GetDrives()
-                .Where(d => d.DriveType == DriveType.Fixed && d.DriveFormat.ToUpper() == "NTFS");
-        }
 
         public static List<FileAndDirectoryEntry> GetAllFilesAndDirectories()
         {
@@ -60,8 +55,39 @@ namespace QueryEngine
                     path => path.FileReferenceNumber,
                     (usn, path) => new FileAndDirectoryEntry(usn, path.Path)));
             }
-
             return result;
+        }
+
+        public static List<FileAndDirectoryEntry> GetAllFilesAndDirectoriesAsync(bool showHidden = false, bool showSys = false)
+        {
+            List<FileAndDirectoryEntry> result = new List<FileAndDirectoryEntry>();
+
+            IEnumerable<DriveInfo> fixedNtfsDrives = GetAllFixedNtfsDrives();
+
+            foreach (var drive in fixedNtfsDrives)
+            {
+                var usnOperator = new UsnOperator(drive);
+
+                var usnEntries = usnOperator.GetEntries().Where(e => !excludeFolders.Contains(e.FileName.ToUpper())
+                                                                   || e.IsHidden == showHidden
+                                                                   || e.IsSys == showSys);
+
+                var folders = usnEntries.Where(e => e.IsFolder).ToArray();
+                List<FrnFilePath> paths = GetFolderPath(folders, drive);
+
+                result.AddRange(usnEntries.Join(
+                    paths,
+                    usn => usn.ParentFileReferenceNumber,
+                    path => path.FileReferenceNumber,
+                    (usn, path) => new FileAndDirectoryEntry(usn, path.Path)));
+            }
+            return result;
+        }
+
+        public static IEnumerable<DriveInfo> GetAllFixedNtfsDrives()
+        {
+            return DriveInfo.GetDrives()
+                .Where(d => d.DriveType == DriveType.Fixed && d.DriveFormat.ToUpper() == "NTFS");
         }
 
         private static List<FrnFilePath> GetFolderPath(UsnEntry[] folders, DriveInfo drive)

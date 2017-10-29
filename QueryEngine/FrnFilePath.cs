@@ -7,38 +7,40 @@ namespace QueryEngine
 {
     internal class FrnFilePath
     {
-        private UInt64 fileReferenceNumber;
+        #region 
+        private UInt64 _fileReferenceNumber;
 
-        private UInt64? parentFileReferenceNumber;
+        private UInt64? _parentFileReferenceNumber;
 
-        private string fileName;
+        private string _fileName;
 
-        private string path;
+        private string _path;
+        #endregion
 
-        public UInt64 FileReferenceNumber { get { return this.fileReferenceNumber; } }
+        public UInt64 FileReferenceNumber { get { return this._fileReferenceNumber; } }
 
-        public UInt64? ParentFileReferenceNumber { get { return this.parentFileReferenceNumber; } }
+        public UInt64? ParentFileReferenceNumber { get { return this._parentFileReferenceNumber; } }
 
-        public string FileName { get { return this.fileName; } }
+        public string FileName { get { return this._fileName; } }
 
         public string Path
-        { 
+        {
             get
             {
-                return this.path; 
+                return this._path;
             }
             set
             {
-                this.path = value;
+                this._path = value;
             }
         }
 
         public FrnFilePath(UInt64 fileReferenceNumber, UInt64? parentFileReferenceNumber, string fileName, string path = null)
         {
-            this.fileReferenceNumber = fileReferenceNumber;
-            this.parentFileReferenceNumber = parentFileReferenceNumber;
-            this.fileName = fileName;
-            this.path = path;
+            this._fileReferenceNumber = fileReferenceNumber;
+            this._parentFileReferenceNumber = parentFileReferenceNumber;
+            this._fileName = fileName;
+            this._path = path;
         }
     }
 }

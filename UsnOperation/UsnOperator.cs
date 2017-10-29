@@ -47,49 +47,7 @@ namespace UsnOperation
             this.ntfsUsnJournalData = new USN_JOURNAL_DATA();
         }
 
-        public UsnJournalData GetUsnJournal()
-        {
-            UsnErrorCode usnErrorCode = this.QueryUSNJournal();
-
-            UsnJournalData result = null;
-
-            if (usnErrorCode == UsnErrorCode.SUCCESS)
-            {
-                result = new UsnJournalData(this.Drive, this.ntfsUsnJournalData);
-            }
-
-            return result;
-        }
-
-        public bool CreateUsnJournal(UInt64 maximumSize = 0x10000000, UInt64 allocationDelta = 0x100000)
-        {
-            uint bytesReturnedCount;
-
-            var createUsnJournalData = new CREATE_USN_JOURNAL_DATA();
-            createUsnJournalData.MaximumSize = maximumSize;
-            createUsnJournalData.AllocationDelta = allocationDelta;
-
-            int sizeCujd = Marshal.SizeOf(createUsnJournalData);
-
-            IntPtr cujdBuffer = GetHeapGlobalPtr(sizeCujd);
-
-            Marshal.StructureToPtr(createUsnJournalData, cujdBuffer, true);
-
-            bool isSuccess = Win32Api.DeviceIoControl(
-                this.DriveRootHandle,
-                UsnControlCode.FSCTL_CREATE_USN_JOURNAL,
-                cujdBuffer,
-                sizeCujd,
-                IntPtr.Zero,
-                0,
-                out bytesReturnedCount,
-                IntPtr.Zero);
-
-            Marshal.FreeHGlobal(cujdBuffer);
-
-            return isSuccess;
-        }
-
+        
         public List<UsnEntry> GetEntries()
         {
             var result = new List<UsnEntry>();
@@ -220,6 +178,50 @@ namespace UsnOperation
             }
 
             return result;
+        }
+
+
+        public UsnJournalData GetUsnJournal()
+        {
+            UsnErrorCode usnErrorCode = this.QueryUSNJournal();
+
+            UsnJournalData result = null;
+
+            if (usnErrorCode == UsnErrorCode.SUCCESS)
+            {
+                result = new UsnJournalData(this.Drive, this.ntfsUsnJournalData);
+            }
+
+            return result;
+        }
+
+        public bool CreateUsnJournal(UInt64 maximumSize = 0x10000000, UInt64 allocationDelta = 0x100000)
+        {
+            uint bytesReturnedCount;
+
+            var createUsnJournalData = new CREATE_USN_JOURNAL_DATA();
+            createUsnJournalData.MaximumSize = maximumSize;
+            createUsnJournalData.AllocationDelta = allocationDelta;
+
+            int sizeCujd = Marshal.SizeOf(createUsnJournalData);
+
+            IntPtr cujdBuffer = GetHeapGlobalPtr(sizeCujd);
+
+            Marshal.StructureToPtr(createUsnJournalData, cujdBuffer, true);
+
+            bool isSuccess = Win32Api.DeviceIoControl(
+                this.DriveRootHandle,
+                UsnControlCode.FSCTL_CREATE_USN_JOURNAL,
+                cujdBuffer,
+                sizeCujd,
+                IntPtr.Zero,
+                0,
+                out bytesReturnedCount,
+                IntPtr.Zero);
+
+            Marshal.FreeHGlobal(cujdBuffer);
+
+            return isSuccess;
         }
 
         public void Dispose()

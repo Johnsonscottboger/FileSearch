@@ -8,6 +8,7 @@ namespace UsnOperation
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Text;
     using PInvoke.Win32.Constants;
@@ -35,14 +36,31 @@ namespace UsnOperation
         public Int32 FileNameLength { get; private set; }
         public Int32 FileNameOffset { get; private set; }
         public string FileName { get; private set; }
-        public bool IsFolder 
-        { 
-            get 
+        public Int64 FileSize { get; private set; }
+
+        public bool IsFolder
+        {
+            get
             {
                 return (this.FileAttributes & Win32ApiConstant.FILE_ATTRIBUTE_DIRECTORY) != 0;
-            } 
+            }
         }
-            
+
+        public bool IsHidden
+        {
+            get { return (this.FileAttributes & Win32ApiConstant.FILE_ATTRIBUTE_HIDDEN) != 0; }
+        }
+
+        public bool IsSys
+        {
+            get { return (this.FileAttributes & Win32ApiConstant.FILE_ATTRIBUTE_SYSTEM) != 0; }
+        }
+
+        public bool IsNormal
+        {
+            get { return (this.FileAttributes & Win32ApiConstant.FILE_ATTRIBUTE_NORMAL) != 0; }
+        }
+
         public UsnEntry(USN_RECORD_V2 usnRecord)
         {
             this.RecordLength = usnRecord.RecordLength;

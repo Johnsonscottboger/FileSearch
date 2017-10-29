@@ -12,6 +12,7 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
+        xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
         xmlns:local="clr-namespace:FileSerach"
         xmlns:model="clr-namespace:FileSerach.Model"
         xmlns:vm="clr-namespace:FileSerach.ViewModel"
@@ -41,14 +42,26 @@
                             <Button Style="{DynamicResource MaterialDesignToolButton}">
                                 <materialDesign:PackIcon Kind="Magnify" Opacity=".56" />
                             </Button>
-                            <TextBox Grid.Column="1" Margin="8 0 0 0" materialDesign:HintAssist.Hint="查找文件，软件" 
+                            <!--<TextBox Grid.Column="1" Margin="8 0 0 0" materialDesign:HintAssist.Hint="查找文件，软件" 
                                      materialDesign:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0"
                                      MinWidth="200" VerticalAlignment="Stretch"
                                      Text="{Binding KeyWord, Mode=TwoWay, UpdateSourceTrigger =PropertyChanged}">
                                 <TextBox.InputBindings>
                                     <KeyBinding Command="{Binding FindCommand}" Key="Return"/>
                                 </TextBox.InputBindings>
-                            </TextBox>
+                            </TextBox>-->
+                            <toolkit:AutoCompleteBox x:Name="searchTextBox" ValueMemberPath="KeyWord" Grid.Column="1" Margin="8 0 0 0" materialDesign:HintAssist.Hint="查找文件，软件" 
+                                                     materialDesign:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0"
+                                                     MinWidth="200" VerticalAlignment="Stretch"
+                                                     Text="{Binding KeyWord, Mode=TwoWay, UpdateSourceTrigger =PropertyChanged}"
+                                                     ItemsSource="{Binding SearchHistorys}"
+                                                     FilterMode="Contains">
+                                <toolkit:AutoCompleteBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding KeyWord}"/>
+                                    </DataTemplate>
+                                </toolkit:AutoCompleteBox.ItemTemplate>
+                            </toolkit:AutoCompleteBox>
                         </Grid>
                     </materialDesign:ColorZone>
                     <Button Style="{DynamicResource MaterialDesignToolForegroundButton}" Margin="10 0 0 0" Panel.ZIndex="0"
@@ -58,11 +71,8 @@
                 </StackPanel>
                 <materialDesign:PopupBox DockPanel.Dock="Right"  PlacementMode="BottomAndAlignRightEdges" StaysOpen="False" HorizontalAlignment="Right">
                     <StackPanel Margin="10">
-                        <CheckBox Content="文件大小" Padding="10 0 10 5"/>
-                        <CheckBox Content="创建时间" Padding="10 5"/>
-                        <Separator/>
-                        <CheckBox Content="隐藏文件" Padding="10 5"/>
-                        <CheckBox Content="系统文件" Padding="10 5 10 0"/>
+                        <CheckBox Content="隐藏文件" IsChecked="{Binding ShowHiddenFile}" Padding="10 5"/>
+                        <CheckBox Content="系统文件" IsChecked="{Binding ShowSysFile}" Padding="10 5 10 0"/>
                     </StackPanel>
                 </materialDesign:PopupBox>
             </DockPanel>

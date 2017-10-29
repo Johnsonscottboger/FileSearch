@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace PInvoke.Win32.Structures
 {
@@ -42,6 +43,7 @@ namespace PInvoke.Win32.Structures
             this.ParentFileReferenceNumber = (UInt64)Marshal.ReadInt64(usnRecordPtr, PFR_OFFSET);
             this.Usn = Marshal.ReadInt64(usnRecordPtr, USN_OFFSET);
             this.Reason = (UInt32)Marshal.ReadInt32(usnRecordPtr, REASON_OFFSET);
+            //this.FileAttributes = (UInt32)Marshal.ReadInt32(usnRecordPtr, FA_OFFSET);
             this.FileAttributes = (UInt32)Marshal.ReadInt32(usnRecordPtr, FA_OFFSET);
             this.FileNameLength = Marshal.ReadInt16(usnRecordPtr, FNL_OFFSET);
             this.FileNameOffset = Marshal.ReadInt16(usnRecordPtr, FN_OFFSET);

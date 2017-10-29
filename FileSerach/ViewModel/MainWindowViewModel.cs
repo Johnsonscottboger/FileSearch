@@ -11,17 +11,27 @@ using System.Windows.Input;
 using FileSerach.Command;
 using FileSerach.Model;
 using QueryEngine;
+using Repository.Implement;
+using Repository.Interface;
 
 namespace FileSerach.ViewModel
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
+        #region Private
+        private IRepository _repository;
+        private IEnumerable<SearchHistory> _searchHistorys;
+
         private string _keyWord;
         private IEnumerable<FileResult> _allFiles;
         private IEnumerable<FileResult> _findFiles;
         private FileResult _selectedItem;
+        private bool _showIcon = true;
+        private bool _showHiddenFile = false;
+        private bool _showSysFile = false;
 
         private Task _loadAllTask;
+        #endregion
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string KeyWord
@@ -64,15 +74,55 @@ namespace FileSerach.ViewModel
             }
         }
 
+        public bool ShowIcon
+        {
+            get { return this._showIcon; }
+            set
+            {
+                this._showIcon = value;
+                this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(ShowIcon)));
+            }
+        }
+
+        public bool ShowHiddenFile
+        {
+            get { return this._showHiddenFile; }
+            set
+            {
+                this._showHiddenFile = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShowHiddenFile)));
+            }
+        }
+
+        public bool ShowSysFile
+        {
+            get { return this._showSysFile; }
+            set
+            {
+                this._showSysFile = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShowSysFile)));
+            }
+        }
+
+        public IEnumerable<SearchHistory> SearchHistorys
+        {
+            get { return this._searchHistorys; }
+            set
+            {
+                this._searchHistorys = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchHistorys)));
+            }
+        }
+
         public MainWindowViewModel()
         {
-            //this.AllFiles = new List<FileResult>()
-            //{
-            //    new FileResult(){ Icon = null, FileName = "Test1.txt", FullName = @"C:\Test1.txt", CreateDateTime = DateTime.Now, Size = "1KB"},
-            //    new FileResult(){Icon = null, FileName = "TestSame.txt", FullName = @"C:\TestSame.txt", Size = "2KB", CreateDateTime = DateTime.Now}
-            //};
-
             this._loadAllTask = LoadAll();
+            this._repository = new SQLiteRepository();
+            var task = this._repository.FindAllAsync<SearchHistory>("ORDER BY DateTime");
+            task.ContinueWith(p =>
+            {
+                this.SearchHistorys = task.Result;
+            }, TaskContinuationOptions.NotOnFaulted);
         }
 
         #region 加载所有
@@ -81,13 +131,12 @@ namespace FileSerach.ViewModel
             return Task.Factory.StartNew(() =>
             {
                 var results = Engine.GetAllFilesAndDirectories();
-                this.AllFiles = results?.Select(p => new FileResult()
+                this.AllFiles = results?.Select(p =>
+                new FileResult()
                 {
                     Icon = null,
                     FileName = p.FileName,
                     FullName = p.FullFileName,
-                    Size = "1KB",
-                    CreateDateTime = DateTime.Now
                 });
             });
         }
@@ -100,6 +149,8 @@ namespace FileSerach.ViewModel
             {
                 if (string.IsNullOrWhiteSpace(this.KeyWord))
                     this.FindFiles = new List<FileResult>();
+                var serach = new SearchHistory() { KeyWord = this.KeyWord, DateTime = DateTime.Now };
+                this._repository.AddOrUpdateAsync(serach);
                 this.FindFiles = this.AllFiles.Where(p => p.FileName.Contains(this.KeyWord));
             };
 
